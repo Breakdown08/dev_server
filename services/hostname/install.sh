@@ -1,0 +1,29 @@
+#!/bin/bash
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/../../common.sh"
+
+HOSTNAME_VAR="ktulhu"
+
+info "Установка hostname: $HOSTNAME_VAR"
+
+if grep -q "export HOSTNAME_VAR=" ~/.bashrc; then
+    sed -i "s/export HOSTNAME_VAR=.*/export HOSTNAME_VAR=\"$HOSTNAME_VAR\"/" ~/.bashrc
+    success "Обновлена переменная HOSTNAME_VAR в ~/.bashrc"
+else
+    echo "export HOSTNAME_VAR=\"$HOSTNAME_VAR\"" >> ~/.bashrc
+    success "Добавлена переменная HOSTNAME_VAR в ~/.bashrc"
+fi
+
+source ~/.bashrc
+
+sudo hostnamectl set-hostname "$HOSTNAME_VAR"
+success "Системный hostname установлен: $HOSTNAME_VAR"
+
+info "Установка avahi-daemon..."
+sudo apt install -y avahi-daemon
+success "avahi-daemon установлен"
+
+sudo systemctl enable avahi-daemon
+sudo systemctl start avahi-daemon
+success "avahi-daemon сервис включён и запущен"

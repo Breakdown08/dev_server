@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab
+    restart: always
+    hostname: 'gitlab'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.${HOSTNAME_VAR}.local'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+    ports:
+      - '8080:80'     # HTTP
+      - '2222:22'     # SSH
+    volumes:
+      - './gitlab/config:/etc/gitlab'
+      - './gitlab/logs:/var/log/gitlab'
+      - './gitlab/data:/var/opt/gitlab'
+    networks:
+      - gitlab-network
+
+networks:
+  gitlab-network:
+    driver: bridge

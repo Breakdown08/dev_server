@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  avahi-cname:
+    image: ghcr.io/grishy/go-avahi-cname:latest
+    container_name: go-avahi-cname
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - "/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket"
+    command:
+      - "cname"
+      - "gitlab"           # будет gitlab.имя-сервера.local
+    environment:
+      - TTL=600           # Время жизни записи в секундах
+      - INTERVAL=300      # Интервал публикации в секундах
