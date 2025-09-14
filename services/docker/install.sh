@@ -27,6 +27,10 @@ info "Проверка статуса активности Docker..."
 sudo systemctl is-active docker
 success "Docker Engine установлен"
 
+info "Добавление текущего пользователя в группу docker..."
+sudo usermod -aG docker $USER
+success "Пользователь добавлен в группу docker.
+
 info "Установка Docker Compose..."
 sudo apt-get install docker-compose
 sudo docker-compose version
