@@ -8,7 +8,7 @@ services:
     hostname: 'gitlab'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://gitlab.${HOSTNAME_VAR}.local'
+        external_url 'http://gitlab.${HOSTNAME}.local'
         gitlab_rails['gitlab_shell_ssh_port'] = 2222
     ports:
       - '8080:80'     # HTTP

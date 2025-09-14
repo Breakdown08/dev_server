@@ -10,7 +10,9 @@ services:
       - "/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket"
     command:
       - "cname"
-      - "gitlab"           # будет gitlab.имя-сервера.local
+      - "gitlab"          # будет gitlab.имя-сервера.local
+      - "bookstack"       # будет bookstack.имя-сервера.local
+      - "wekan"           # будет wekan.имя-сервера.local
     environment:
       - TTL=600           # Время жизни записи в секундах
       - INTERVAL=300      # Интервал публикации в секундах
