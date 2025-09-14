@@ -3,7 +3,6 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/../../common.sh"
 
-# Запрос имени хоста у пользователя
 read -p "Введите имя хоста (по умолчанию ktulhu): " USER_HOSTNAME
 HOSTNAME_VAR="${USER_HOSTNAME:-ktulhu}"
 

@@ -21,7 +21,7 @@ fi
 info "Запуск GitLab через Docker Compose..."
 debug "Используется файл: $DOCKER_COMPOSE_FILE"
 
-docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
+sudo docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 if [ $? -eq 0 ]; then
     success "GitLab успешно запущен в Docker"
 else
