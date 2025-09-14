@@ -32,7 +32,7 @@ sudo usermod -aG docker $USER
 success "Пользователь добавлен в группу docker."
 
 info "Установка Docker Compose..."
-sudo apt-get install docker-compose
+sudo apt-get install -y docker-compose
 sudo docker-compose version
 
 success "Установка Docker завершена!"
