@@ -4,6 +4,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/../../common.sh"
 source ~/.bashrc
 
+info "Проверка переменной окружения..."
+echo "${HOSTNAME_VAR:-NULL}"
 if [ -z "$HOSTNAME_VAR" ]; then
     error "Переменная окружения HOSTNAME_VAR не установлена"
     exit 1
