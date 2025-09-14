@@ -2,6 +2,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/../../common.sh"
+source ~/.bashrc
 
 if [ -z "$HOSTNAME_VAR" ]; then
     error "Переменная окружения HOSTNAME_VAR не установлена"
