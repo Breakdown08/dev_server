@@ -3,11 +3,8 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
 
-info "Готовим точку восстанвления..."
-sudo lvcreate -L 15G -s -n origin /dev/ubuntu-vg/ubuntu-lv
-success "Точка восстановления создана!"
-
 info "Начинаем установку проекта..."
+sudo apt-get update -qq
 
 MODULES_DIR="${SCRIPT_DIR}/services"
 

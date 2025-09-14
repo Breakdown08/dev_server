@@ -3,53 +3,33 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/../../common.sh"
 
-info "Установка Docker и Docker Compose..."
+info "Начало установки Docker..."
 
-info "Скачивание установочного скрипта Docker..."
-curl -fsSL https://get.docker.com -o get-docker.sh
-if [ $? -eq 0 ]; then
-    success "Скрипт установки Docker скачан"
-else
-    error "Ошибка при скачивании скрипта установки Docker"
-    exit 1
-fi
+info "Установка зависимостей..."
+sudo apt-get install -qq curl software-properties-common ca-certificates apt-transport-https -y
+success "Зависимости установлены"
 
-info "Установка Docker..."
-sudo sh get-docker.sh
-if [ $? -eq 0 ]; then
-    success "Docker установлен"
-else
-    error "Ошибка при установке Docker"
-    rm -f get-docker.sh
-    exit 1
-fi
+info "Добавление GPG-ключа Docker..."
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor | sudo tee /etc/apt/keyrings/docker.gpg > /dev/null
+success "GPG-ключ Docker добавлен"
 
-rm -f get-docker.sh
-success "Временный файл удалён"
+info "Добавление репозитория Docker..."
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu jammy stable"| sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+success "Репозиторий Docker добавлен"
 
-info "Добавление пользователя в группу docker..."
-sudo usermod -aG docker $USER
-success "Пользователь добавлен в группу docker"
+info "Повторное обновление списка пакетов..."
+sudo apt-get update -qq
+success "Список пакетов обновлён"
+
+info "Установка Docker Engine..."
+apt-cache policy docker-ce
+sudo apt-get install -qq docker-ce -y
+sudo systemctl is-active docker
+success "Docker Engine установлен"
 
 info "Установка Docker Compose..."
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-if [ $? -eq 0 ]; then
-    success "Docker Compose скачан"
-else
-    error "Ошибка при скачивании Docker Compose"
-    exit 1
-fi
+sudo apt-get install docker-compose
+sudo docker compose version
 
-sudo chmod +x /usr/local/bin/docker-compose
-success "Права на выполнение установлены для Docker Compose"
 
-info "Включение и запуск сервиса Docker..."
-sudo systemctl enable docker
-sudo systemctl start docker
-
-if [ $? -eq 0 ]; then
-    success "Сервис Docker включён и запущен"
-else
-    error "Ошибка при запуске сервиса Docker"
-    exit 1
-fi
+success "Установка Docker завершена!"
