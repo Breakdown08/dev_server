@@ -22,14 +22,13 @@ sudo apt-get update -qq
 success "Список пакетов обновлён"
 
 info "Установка Docker Engine..."
-apt-cache policy docker-ce
 sudo apt-get install -qq docker-ce -y
+info "Проверка статуса активности Docker..."
 sudo systemctl is-active docker
 success "Docker Engine установлен"
 
 info "Установка Docker Compose..."
 sudo apt-get install docker-compose
-sudo docker compose version
-
+sudo docker-compose version
 
 success "Установка Docker завершена!"
