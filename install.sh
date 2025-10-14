@@ -13,7 +13,7 @@ if [[ ! -d "$MODULES_DIR" ]]; then
     exit 1
 fi
 
-for module in hostname local_subdomains nginx docker; do
+for module in docker nginx gitlab penpot bookstack wekan; do
     MODULE_PATH="$MODULES_DIR/$module/install.sh"
     
     if [[ -f "$MODULE_PATH" ]]; then

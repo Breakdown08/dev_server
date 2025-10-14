@@ -2,26 +2,33 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/../../common.sh"
-source ~/.profile
 
-info "Проверка переменной окружения..."
-echo "${HOSTNAME_VAR:-NULL}"
-if [ -z "$HOSTNAME_VAR" ]; then
-    error "Переменная окружения HOSTNAME_VAR не установлена"
+info "Получение IP-адреса Wi-Fi интерфейса..."
+
+WIFI_IP=$(get_wifi_ip)
+
+if [ -z "$WIFI_IP" ]; then
+    error "Не удалось определить IP-адрес Wi-Fi интерфейса"
     exit 1
 fi
 
+success "Найден IP-адрес Wi-Fi: $WIFI_IP"
+
 info "Установка и настройка GitLab..."
+
+sudo rm -r ./gitlab-data/
 
 DOCKER_COMPOSE_FILE="${SCRIPT_DIR}/docker-compose.yml"
 if [[ ! -f "$DOCKER_COMPOSE_FILE" ]]; then
     error "Файл docker-compose.yml не найден: $DOCKER_COMPOSE_FILE"
     exit 1
 fi
+
 info "Запуск GitLab через Docker Compose..."
 debug "Используется файл: $DOCKER_COMPOSE_FILE"
 
-sudo HOSTNAME=$HOSTNAME_VAR docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
+sudo docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
+
 if [ $? -eq 0 ]; then
     success "GitLab успешно запущен в Docker"
 else
@@ -29,24 +36,17 @@ else
     exit 1
 fi
 
-info "Настройка nginx конфигурации для GitLab..."
+info "Ожидание готовности Gitlab..."
 
-NGINX_CONF="${SCRIPT_DIR}/nginx.conf"
-if [[ ! -f "$NGINX_CONF" ]]; then
-    error "Файл конфигурации nginx не найден: $NGINX_CONF"
-    exit 1
-fi
+while ! curl -f -s -o /dev/null --connect-timeout 5 --max-time 10 http://localhost:5001/users/sign_in; do
+	sleep 10;
+done
 
-config_content=$(cat "$NGINX_CONF")
-success "Конфигурационный файл nginx загружен"
+success "Конфигурация GitLab успешно применена"
 
-updated_config="${config_content//placeholder/$HOSTNAME_VAR.local}"
-success "Выполнена замена placeholder на $HOSTNAME_VAR.local"
-
-echo "$updated_config" | sudo tee /etc/nginx/services/gitlab.conf > /dev/null
-if [ $? -eq 0 ]; then
-    success "Конфиг nginx успешно записан в /etc/nginx/services/gitlab.conf"
+INITIAL_PASSWORD=$(docker exec gitlab awk '/^Password:/ {print $2}' /etc/gitlab/initial_root_password 2>/dev/null)
+if [ -n "$INITIAL_PASSWORD" ]; then
+    success "Первоначальный вход [login: root password: $INITIAL_PASSWORD]"
 else
-    error "Ошибка при записи файла конфигурации nginx"
-    exit 1
+    info "Не удалось прочитать initial_root_password — возможно, он уже удалён."
 fi

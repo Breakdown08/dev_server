@@ -23,3 +23,19 @@ success() { styled_echo "$COLOR_GREEN"   "SUCCESS" "$1"; }
 warn()    { styled_echo "$COLOR_YELLOW"  "WARN"    "$1"; }
 error()   { styled_echo "$COLOR_RED"     "ERROR"   "$1"; }
 debug()   { styled_echo "$COLOR_PURPLE"  "DEBUG"   "$1"; }
+
+get_wifi_ip() {
+    local wifi_ip=""
+    for iface in /sys/class/net/*/wireless; do
+        if [[ -e "$iface" ]]; then
+            local iface_name
+            iface_name=$(basename "$(dirname "$iface")")
+            wifi_ip=$(ip -4 addr show "$iface_name" 2>/dev/null | grep -oP 'inet \K[\d.]+')
+            if [[ -n "$wifi_ip" ]]; then
+                echo "$wifi_ip"
+                return 0
+            fi
+        fi
+    done
+    return 1
+}

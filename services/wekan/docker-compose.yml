@@ -1,0 +1,52 @@
+services:
+
+  wekandb:
+    image: mongo:7
+    container_name: wekan-db
+    restart: always
+    command: mongod --logpath /dev/null --oplogSize 128 --quiet
+    networks:
+      - wekan-tier
+    expose:
+      - 27017
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - wekan-db:/data/db
+      - wekan-db-dump:/dump
+
+  wekan:
+    image: ghcr.io/wekan/wekan:latest
+    container_name: wekan-app
+    restart: always
+    networks:
+      - wekan-tier
+    ports:
+      - 5006:8080
+    environment:
+      - WRITABLE_PATH=/data
+      - MONGO_URL=mongodb://wekandb:27017/wekan
+      - ROOT_URL=http://${WEKAN_EXPORTER_HOST_IP}:5006
+      - MAIL_URL=smtp://<mail_url>:25/?ignoreTLS=true&tls={rejectUnauthorized:false}
+      - MAIL_FROM=Wekan Notifications <noreply.wekan@mydomain.com>
+      - WITH_API=true
+      - RICHER_CARD_COMMENT_EDITOR=false
+      - CARD_OPENED_WEBHOOK_ENABLED=false
+      - BIGEVENTS_PATTERN=NONE
+      - BROWSER_POLICY_ENABLED=true
+      - LDAP_BACKGROUND_SYNC_INTERVAL=''
+    depends_on:
+      - wekandb
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - wekan-files:/data:rw
+volumes:
+  wekan-files:
+    driver: local
+  wekan-db:
+    driver: local
+  wekan-db-dump:
+    driver: local
+
+networks:
+  wekan-tier:
+    driver: bridge

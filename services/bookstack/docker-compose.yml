@@ -1,0 +1,35 @@
+version: '3'
+services:
+  bookstack-db:
+    image: mariadb:10.11
+    container_name: bookstack-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=supersecretpassword
+      - MYSQL_DATABASE=bookstack_db
+      - MYSQL_USER=bookstack_user
+      - MYSQL_PASSWORD=bookstack_password
+    volumes:
+      - ./bookstack-db:/var/lib/mysql
+    restart: unless-stopped
+
+  bookstack:
+    image: lscr.io/linuxserver/bookstack:latest
+    container_name: bookstack
+    depends_on:
+      - bookstack-db
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Moscow
+      - APP_URL=http://${BOOKSTACK_EXPORTER_HOST_IP}:5005
+      - APP_KEY=base64:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  # см. шаг 3
+      - DB_HOST=bookstack-db
+      - DB_PORT=3306
+      - DB_USERNAME=bookstack_user
+      - DB_PASSWORD=bookstack_password
+      - DB_DATABASE=bookstack_db
+    volumes:
+      - ./bookstack-config:/config
+    ports:
+      - 5005:80
+    restart: unless-stopped

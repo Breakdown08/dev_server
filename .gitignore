@@ -1,0 +1,3 @@
+services/gitlab/gitlab-data/
+services/bookstack/bookstack-config/
+services/bookstack/bookstack-db/
