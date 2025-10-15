@@ -1,740 +1,773 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📗</text></svg>">
-	<title>Ktulhu</title>
 	<style>
-	* {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-	}
-	
 	body {
-		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-		background: linear-gradient(135deg, #0f172a 0%, #064e3b 100%);
-		color: #fff;
-		min-height: 100vh;
-		padding: 2rem;
-		position: relative;
-		overflow-x: hidden;
-	}
-	
-	@keyframes float {
-		0%,
-		100% {
-			transform: translate(0, 0);
-		}
-		25% {
-			transform: translate(20px, 20px);
-		}
-		50% {
-			transform: translate(0, 40px);
-		}
-		75% {
-			transform: translate(-20px, 20px);
-		}
-	}
-	
-	.container {
-		max-width: 1200px;
-		margin: 0 auto;
-	}
-	
-	header {
-		text-align: center;
-		margin-bottom: 3rem;
-		animation: fadeInDown 0.8s ease-out;
-	}
-	
-	.header-content {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 1rem;
-		margin-bottom: 1rem;
-	}
-	
-	.server-icon {
-		width: 40px;
-		height: 40px;
-		background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-		border-radius: 12px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
-		font-size: 1.4rem;
-	}
-	
-	h1 {
-		font-size: 2.5rem;
-		font-weight: 800;
-		background: linear-gradient(to right, #6ee7b7, #34d399, #10b981);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-	}
-	
-	.subtitle {
-		font-size: 1.1rem;
-		color: #9ca3af;
-		max-width: 600px;
-		margin: 0 auto;
-	}
-	/* Section styling */
-	
-	.section {
-		margin-bottom: 3rem;
-	}
-	
-	.section-title {
-		font-size: 1.5rem;
-		font-weight: 700;
-		margin-bottom: 1.5rem;
-		color: #10b981;
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-	
-	.section-divider {
-		height: 1px;
-		background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), transparent);
-		margin: 2rem 0;
-	}
-	
-	.stats-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-		gap: 1.5rem;
-		margin-bottom: 2rem;
-	}
-	
-	.stat-card {
-		background: rgba(15, 23, 42, 0.7);
-		border: 1px solid rgba(56, 139, 115, 0.3);
-		border-radius: 16px;
-		padding: 1.5rem;
-		backdrop-filter: blur(10px);
-		transition: all 0.3s ease;
-		animation: fadeInUp 0.6s ease-out;
-	}
-	
-	.stat-card:hover {
-		transform: translateY(-5px);
-		border-color: rgba(16, 185, 129, 0.5);
-		box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
-	}
-	
-	.stat-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 1rem;
-		padding-bottom: 0.5rem;
-	}
-	
-	.stat-icon {
-		width: 48px;
-		height: 48px;
-		border-radius: 12px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1.5rem;
-	}
-	
-	.cpu-icon {
-		background: linear-gradient(135deg, #06b6d4, #0891b2);
-	}
-	
-	.network-icon {
-		background: linear-gradient(135deg, #0b70f5, #290e58);
-	}
-	
-	.stat-label {
-		color: #9ca3af;
-		font-size: 0.9rem;
-	}
-	
-	.stat-value {
-		font-size: 1.5rem;
-		font-weight: 700;
-		color: white;
-	}
-	
-	.status-indicator {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		margin-top: 0.5rem;
-	}
-	
-	.status-dot {
-		width: 12px;
-		height: 12px;
-		border-radius: 50%;
-	}
-	
-	.status-dot.online {
-		background: #10b981;
-		box-shadow: 0 0 10px #10b981;
-	}
-	
-	.status-dot.offline {
-		background: #ef4444;
-		box-shadow: 0 0 10px #ef4444;
-	}
-	
-	.status-text {
-		font-size: 1rem;
-		font-weight: 600;
-	}
-	
-	.ip-address {
-		font-size: 1.2rem;
-		font-weight: 700;
-		margin: 0.5rem 0;
-		word-break: break-all;
-	}
-	/* Memory Card Styles */
-	
-	.memory-card {
-		background: rgba(15, 23, 42, 0.7);
-		border: 1px solid rgba(56, 139, 115, 0.3);
-		border-radius: 20px;
-		padding: 1.5rem;
-		backdrop-filter: blur(10px);
-		transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		height: 100%;
-	}
-	
-	.memory-card:hover {
-		transform: translateY(-5px);
-		border-color: rgba(16, 185, 129, 0.6);
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-	}
-	
-	.card-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 1.5rem;
-	}
-	
-	.card-title {
-		font-size: 1.3rem;
-		font-weight: 700;
-		color: white;
-	}
-	
-	.memory-icon {
-		width: 48px;
-		height: 48px;
-		background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-		border-radius: 12px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1.3rem;
-	}
-	
-	.memory-item {
-		margin-bottom: 1.2rem;
-	}
-	
-	.memory-item:last-child {
-		margin-bottom: 1rem;
-	}
-	
-	.memory-label {
-		display: flex;
-		justify-content: space-between;
-		margin-bottom: 0.5rem;
-		color: #9ca3af;
-		font-size: 0.85rem;
-	}
-	
-	.memory-value {
-		font-weight: 600;
-		color: white;
-	}
-	
-	.progress-bar {
-		height: 8px;
-		background: rgba(30, 41, 59, 0.5);
-		border-radius: 4px;
-		overflow: hidden;
-		position: relative;
-	}
-	
-	.progress-fill {
-		height: 100%;
-		border-radius: 4px;
-		transition: width 1s ease-in-out;
-		position: relative;
-	}
-	
-	.ram-fill {
-		background: linear-gradient(90deg, #3b82f6, #60a5fa);
-		width: 40%;
-	}
-	
-	.storage-fill {
-		background: linear-gradient(90deg, #10b981, #059669);
-		width: 65%;
-	}
-	
-	.progress-text {
-		font-size: 0.75rem;
-		color: #9ca3af;
-		margin-top: 0.2rem;
-		text-align: left;
-	}
-	
-	.card-footer {
-		text-align: center;
-		padding-top: 1rem;
-		border-top: 1px solid rgba(56, 139, 115, 0.3);
-	}
-	
-	.refresh-btn {
-		background: rgba(16, 185, 129, 0.2);
-		color: #10b981;
-		border: 1px solid rgba(16, 185, 129, 0.5);
-		padding: 0.5rem 1.2rem;
-		border-radius: 6px;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		font-weight: 600;
-		font-size: 0.85rem;
-	}
-	
-	.refresh-btn:hover {
-		background: rgba(16, 185, 129, 0.3);
-		transform: translateY(-1px);
-	}
-	
-	.services-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-		gap: 2rem;
-	}
-	
-	.service-card {
-		background: rgba(15, 23, 42, 0.7);
-		border: 1px solid rgba(56, 139, 115, 0.3);
-		border-radius: 20px;
-		padding: 2rem;
-		backdrop-filter: blur(10px);
-		transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		position: relative;
-		overflow: hidden;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-around;
-	}
-	
-	.service-card::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 4px;
-		background: linear-gradient(90deg, #10b981, #06b6d4);
-		transform: scaleX(0);
-		transform-origin: left;
-		transition: transform 0.4s ease;
-	}
-	
-	.service-card:hover {
-		transform: translateY(-10px);
-		border-color: rgba(16, 185, 129, 0.6);
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-	}
-	
-	.service-card:hover::before {
-		transform: scaleX(1);
-	}
-	
-	.service-icon {
-		width: 60px;
-		height: 60px;
-		border-radius: 16px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1.8rem;
-		margin-bottom: 1.5rem;
-		transition: transform 0.3s ease;
-	}
-	
-	.service-card:hover .service-icon {
-		transform: scale(1.1) rotate(5deg);
-	}
-	
-	.gitlab-icon {
-		background: linear-gradient(135deg, #4c74ea, #305c3a);
-	}
-	
-	.bookstack-icon {
-		background: linear-gradient(135deg, #3b82f6, #60a5fa);
-	}
-	
-	h2 {
-		font-size: 1.8rem;
-		font-weight: 700;
-		margin-bottom: 1rem;
-		color: white;
-		transition: color 0.3s ease;
-	}
-	
-	.service-card:hover h2 {
-		color: #10b981;
-	}
-	
-	p {
-		color: #9ca3af;
-		line-height: 1.6;
-		margin-bottom: 2rem;
-	}
-	
-	.btn {
-		display: inline-block;
-		background: linear-gradient(135deg, #10b981, #059669);
-		color: white;
-		text-decoration: none;
-		padding: 0.8rem 2rem;
-		border-radius: 12px;
-		font-weight: 600;
-		transition: all 0.3s ease;
-		border: none;
-		cursor: pointer;
-		width: 100%;
-		text-align: center;
-		font-size: 1rem;
-		letter-spacing: 0.5px;
-	}
-	
-	.btn:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
-		background: linear-gradient(135deg, #059669, #10b981);
-	}
-	
-	footer {
-		text-align: center;
-		padding-top: 2rem;
-		border-top: 1px solid rgba(56, 139, 115, 0.3);
-		color: #9ca3af;
-		font-size: 0.9rem;
-		margin-top: 2rem;
-	}
-	
-	@keyframes fadeInDown {
-		from {
-			opacity: 0;
-			transform: translateY(-30px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-	
-	@keyframes fadeInUp {
-		from {
-			opacity: 0;
-			transform: translateY(30px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-	
-	@keyframes pulse {
-		0% {
-			opacity: 1;
-		}
-		50% {
-			opacity: 0.5;
-		}
-		100% {
-			opacity: 1;
-		}
-	}
-	
-	.stat-card:nth-child(1) {
-		animation-delay: 0.1s;
-	}
-	
-	.stat-card:nth-child(2) {
-		animation-delay: 0.2s;
-	}
-	
-	.service-card:nth-child(1) {
-		animation-delay: 0.4s;
-	}
-	
-	.service-card:nth-child(2) {
-		animation-delay: 0.5s;
-	}
-	/* CPU Card extended styles */
-	
-	.cpu-card {
-		grid-column: span 2;
-	}
-	
-	.cpu-stats {
-		display: flex;
-		justify-content: space-around;
-		margin: 1.5rem 0;
-		text-align: center;
-	}
-	
-	.cpu-stat-item {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-	
-	.cpu-stat-value {
-		font-size: 1.8rem;
-		font-weight: 700;
-		color: #10b981;
-		margin-bottom: 0.2rem;
-	}
-	
-	.cpu-stat-label {
-		font-size: 0.9rem;
-		color: #9ca3af;
-	}
-	/* Chart styles */
-	
-	.chart-container {
-		background: rgba(15, 23, 42, 0.5);
-		border: 1px solid rgba(56, 139, 115, 0.2);
-		border-radius: 12px;
-		padding: 1rem;
-		margin-top: 1rem;
-	}
-	
-	.chart-title {
-		font-size: 1rem;
-		font-weight: 600;
-		color: #06b6d4;
-		margin-bottom: 0.8rem;
-		text-align: center;
-	}
-	
-	.chart {
-		height: 120px;
-		position: relative;
-		display: flex;
-		align-items: flex-end;
-		justify-content: space-between;
-		gap: 3px;
-	}
-	
-	.chart-bar {
-		flex: 1;
-		background: linear-gradient(to top, #06b6d4, #0891b2);
-		border-radius: 2px 2px 0 0;
-		min-width: 6px;
-		position: relative;
-		transition: height 0.3s ease;
-	}
-	
-	.chart-bar:hover {
-		background: linear-gradient(to top, #0891b2, #06b6d4);
-		opacity: 0.8;
-	}
-	
-	.chart-labels {
-		display: flex;
-		justify-content: space-between;
-		margin-top: 0.5rem;
-		font-size: 0.7rem;
-		color: #9ca3af;
-	}
-	
-	@media (max-width: 768px) {
-		body {
-			padding: 1rem;
-		}
-		h1 {
-			font-size: 2rem;
-		}
-		.services-grid {
-			grid-template-columns: 1fr;
-		}
-		.stats-grid {
-			grid-template-columns: 1fr;
-		}
-		.cpu-card {
-			grid-column: span 1;
-		}
-		.cpu-stats {
-			flex-direction: column;
-			gap: 1rem;
-		}
+		background-color: white;
+		/* Ensure the iframe has a white background */
 	}
 	</style>
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📗</text></svg>">
 </head>
 
 <body>
-	<div class="container">
-		<header>
-			<div class="header-content">
-				<h1>Ktulhu</h1> </div>
-		</header>
-		<!-- Services Section -->
-		<div class="section">
-			<h2 class="section-title">🚀 Сервисы</h2>
-			<div class="services-grid">
-				<div class="service-card">
-					<div class="service-icon gitlab-icon">🧬</div>
-					<h2>GitLab</h2>
-					<p>Система контроля версий</p> <a href="http://yourserver:8080" class="btn">Открыть</a> </div>
-				<div class="service-card">
-					<div class="service-icon bookstack-icon">📚</div>
-					<h2>BookStack</h2>
-					<p>База знаний для хранения документации</p> <a href="http://yourserver:6875" class="btn">Открыть</a> </div>
-			</div>
-		</div>
-		<div class="section-divider"></div>
-		<!-- System Metrics Section -->
-		<div class="section">
-			<h2 class="section-title">🌡️ Системные показатели</h2>
-			<div class="stats-grid">
-				<div class="stat-card cpu-card">
-					<div class="stat-header">
-						<div class="card-title">Процессор</div>
-						<div class="stat-icon cpu-icon">🧠</div>
-					</div>
-					<!-- CPU Stats -->
-					<div class="cpu-stats">
-						<div class="cpu-stat-item">
-							<div class="cpu-stat-value">24%</div>
-							<div class="cpu-stat-label">Нагрузка</div>
-						</div>
-						<div class="cpu-stat-item">
-							<div class="cpu-stat-value">42°C</div>
-							<div class="cpu-stat-label">Температура</div>
-						</div>
-					</div>
-					<!-- Chart Section -->
-					<div class="chart-container">
-						<div class="chart-title">Нагрузка CPU за последние 5 минут</div>
-						<div class="chart" id="cpuChart">
-							<!-- Chart bars will be generated by JavaScript -->
-						</div>
-						<div class="chart-labels"> <span>5 мин</span> <span>4 мин</span> <span>3 мин</span> <span>2 мин</span> <span>1 мин</span> <span>Сейчас</span> </div>
-					</div>
-				</div>
-				<div class="stat-card">
-					<div class="stat-header">
-						<div class="card-title">Память</div>
-						<div class="memory-icon">💾</div>
-					</div>
-					<div class="memory-item">
-						<div class="memory-label"> <span>Оперативная память</span> <span class="memory-value">3.2/8 ГБ</span> </div>
-						<div class="progress-bar">
-							<div class="progress-fill ram-fill"></div>
-						</div>
-						<div class="progress-text">40%</div>
-					</div>
-					<div class="memory-item">
-						<div class="memory-label"> <span>Дисковое пространство</span> <span class="memory-value">325/500 ГБ</span> </div>
-						<div class="progress-bar">
-							<div class="progress-fill storage-fill"></div>
-						</div>
-						<div class="progress-text">65%</div>
-					</div>
-				</div>
-				<div class="stat-card">
-					<div class="stat-header">
-						<div class="card-title">Сеть</div>
-						<div class="stat-icon network-icon">🌐</div>
-					</div>
-          <div class="stat-label">Локальный ip-адрес</div>
-					<div class="ip-address">192.168.1.11</div>
-          <br>
-          <div class="stat-label">Доступ в интернет</div>
-					<div class="status-indicator">
-						<div class="status-dot online"></div>
-						<div class="status-text">Подключение успешно</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<footer>Designed by Qwen Coder AI Model</footer>
-	</div>
-	<script>
-	// Generate chart data
-	function generateChart() {
-		const chart = document.getElementById('cpuChart');
-		const data = [15, 22, 18, 24, 19, 21]; // Sample data for last 5 minutes
-		// Clear existing bars
-		chart.innerHTML = '';
-		// Create bars
-		data.forEach(value => {
-			const bar = document.createElement('div');
-			bar.className = 'chart-bar';
-			bar.style.height = `${value * 4}px`; // Scale for visualization
-			bar.title = `${value}%`;
-			chart.appendChild(bar);
-		});
-	}
-	// Update current time
-	function updateTime() {
-		const now = new Date();
-		const options = {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit'
-		};
-	}
-	// Simulate network status check
-	function checkNetworkStatus() {
-		// In a real implementation, this would check actual network status
-		// For demo purposes, we'll keep it as online
-		const statusDot = document.querySelector('.status-dot');
-		const statusText = document.querySelector('.status-text');
-		// Simulate occasional network check
-		if(Math.random() > 0.5) {
-			// Simulate brief network issue
-			statusDot.className = 'status-dot offline';
-			statusText.textContent = 'Подключение недоступно';
-			setTimeout(() => {
-				statusDot.className = 'status-dot online';
-				statusText.textContent = 'Подключение успешно';
-			}, 1000);
+	<!DOCTYPE html>
+	<html lang="ru">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Домашний сервер</title>
+		<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
 		}
-	}
-	// Initialize
-	updateTime();
-	generateChart();
-	setInterval(updateTime, 1000);
-	setInterval(checkNetworkStatus, 5000);
-	// Add hover effects to cards
-	document.querySelectorAll('.service-card, .stat-card').forEach(card => {
-		card.addEventListener('mouseenter', function() {
-			this.style.transform = 'translateY(-5px)';
+
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background: linear-gradient(135deg, #0f172a 0%, #064e3b 100%);
+			color: #fff;
+			min-height: 100vh;
+			padding: 2rem;
+			position: relative;
+			overflow-x: hidden;
+		}
+
+		@keyframes float {
+			0%,
+			100% {
+				transform: translate(0, 0);
+			}
+			25% {
+				transform: translate(20px, 20px);
+			}
+			50% {
+				transform: translate(0, 40px);
+			}
+			75% {
+				transform: translate(-20px, 20px);
+			}
+		}
+
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+		}
+
+		header {
+			text-align: center;
+			margin-bottom: 3rem;
+			animation: fadeInDown 0.8s ease-out;
+		}
+
+		.header-content {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 1rem;
+			margin-bottom: 1rem;
+		}
+
+		.server-icon {
+			width: 40px;
+			height: 40px;
+			background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+			font-size: 1.4rem;
+		}
+
+		h1 {
+			font-size: 2.5rem;
+			font-weight: 800;
+			background: linear-gradient(to right, #6ee7b7, #34d399, #10b981);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+		}
+
+		.subtitle {
+			font-size: 1.1rem;
+			color: #9ca3af;
+			max-width: 600px;
+			margin: 0 auto;
+		}
+		/* Section styling */
+
+		.section {
+			margin-bottom: 3rem;
+		}
+
+		.section-title {
+			font-size: 1.5rem;
+			font-weight: 700;
+			margin-bottom: 1.5rem;
+			color: #10b981;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+		.section-divider {
+			height: 1px;
+			background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), transparent);
+			margin: 2rem 0;
+		}
+
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 1.5rem;
+			margin-bottom: 2rem;
+		}
+
+		.stat-card {
+			background: rgba(15, 23, 42, 0.7);
+			border: 1px solid rgba(56, 139, 115, 0.3);
+			border-radius: 16px;
+			padding: 1.5rem;
+			backdrop-filter: blur(10px);
+			transition: all 0.3s ease;
+			animation: fadeInUp 0.6s ease-out;
+		}
+
+		.stat-card:hover {
+			transform: translateY(-5px);
+			border-color: rgba(16, 185, 129, 0.5);
+			box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+		}
+
+		.stat-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1rem;
+		}
+
+		.stat-icon {
+			width: 48px;
+			height: 48px;
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.5rem;
+		}
+
+		.cpu-icon {
+			background: linear-gradient(135deg, #06b6d4, #0891b2);
+		}
+
+		.network-icon {
+			background: linear-gradient(135deg, #0b70f5, #290e58);
+		}
+
+		.stat-label {
+			color: #9ca3af;
+			font-size: 0.9rem;
+		}
+
+		.stat-value {
+			font-size: 1.5rem;
+			font-weight: 700;
+			color: white;
+		}
+
+		.status-indicator {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			margin-top: 0.5rem;
+		}
+
+		.status-dot {
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+		}
+
+		.status-dot.online {
+			background: #10b981;
+			box-shadow: 0 0 10px #10b981;
+		}
+
+		.status-dot.offline {
+			background: #ef4444;
+			box-shadow: 0 0 10px #ef4444;
+		}
+
+		.status-text {
+			font-size: 1rem;
+			font-weight: 600;
+		}
+
+		.ip-address {
+			font-size: 1.2rem;
+			font-weight: 700;
+			color: #60a5fa;
+			margin: 0.5rem 0;
+			word-break: break-all;
+		}
+		/* Memory Card Styles */
+
+		.memory-card {
+			background: rgba(15, 23, 42, 0.7);
+			border: 1px solid rgba(56, 139, 115, 0.3);
+			border-radius: 20px;
+			padding: 1.5rem;
+			backdrop-filter: blur(10px);
+			transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+			height: 100%;
+		}
+
+		.memory-card:hover {
+			transform: translateY(-5px);
+			border-color: rgba(16, 185, 129, 0.6);
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+		}
+
+		.card-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1.5rem;
+		}
+
+		.card-title {
+			font-size: 1.3rem;
+			font-weight: 700;
+			color: white;
+		}
+
+		.memory-icon {
+			width: 48px;
+			height: 48px;
+			background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.3rem;
+		}
+
+		.memory-item {
+			margin-bottom: 1.2rem;
+		}
+
+		.memory-item:last-child {
+			margin-bottom: 1rem;
+		}
+
+		.memory-label {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 0.5rem;
+			color: #9ca3af;
+			font-size: 0.85rem;
+		}
+
+		.memory-value {
+			font-weight: 600;
+			color: white;
+		}
+
+		.progress-bar {
+			height: 8px;
+			background: rgba(30, 41, 59, 0.5);
+			border-radius: 4px;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.progress-fill {
+			height: 100%;
+			border-radius: 4px;
+			transition: width 1s ease-in-out;
+			position: relative;
+		}
+
+		.ram-fill {
+			background: linear-gradient(90deg, #3b82f6, #60a5fa);
+			width: 40%;
+		}
+
+		.storage-fill {
+			background: linear-gradient(90deg, #10b981, #059669);
+			width: 65%;
+		}
+
+		.progress-text {
+			font-size: 0.75rem;
+			color: #9ca3af;
+			margin-top: 0.2rem;
+			text-align: left;
+		}
+
+		.card-footer {
+			text-align: center;
+			padding-top: 1rem;
+			border-top: 1px solid rgba(56, 139, 115, 0.3);
+		}
+
+		.refresh-btn {
+			background: rgba(16, 185, 129, 0.2);
+			color: #10b981;
+			border: 1px solid rgba(16, 185, 129, 0.5);
+			padding: 0.5rem 1.2rem;
+			border-radius: 6px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-weight: 600;
+			font-size: 0.85rem;
+		}
+
+		.refresh-btn:hover {
+			background: rgba(16, 185, 129, 0.3);
+			transform: translateY(-1px);
+		}
+
+		.services-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 2rem;
+		}
+
+		.service-card {
+			background: rgba(15, 23, 42, 0.7);
+			border: 1px solid rgba(56, 139, 115, 0.3);
+			border-radius: 20px;
+			padding: 2rem;
+			backdrop-filter: blur(10px);
+			transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+			position: relative;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+		}
+
+		.service-card::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 4px;
+			background: linear-gradient(90deg, #10b981, #06b6d4);
+			transform: scaleX(0);
+			transform-origin: left;
+			transition: transform 0.4s ease;
+		}
+
+		.service-card:hover {
+			transform: translateY(-10px);
+			border-color: rgba(16, 185, 129, 0.6);
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+		}
+
+		.service-card:hover::before {
+			transform: scaleX(1);
+		}
+
+		.service-icon {
+			width: 60px;
+			height: 60px;
+			border-radius: 16px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.8rem;
+			margin-bottom: 1.5rem;
+			transition: transform 0.3s ease;
+		}
+
+		.service-card:hover .service-icon {
+			transform: scale(1.1) rotate(5deg);
+		}
+
+		.gitlab-icon {
+			background: linear-gradient(135deg, #4c74ea, #305c3a);
+		}
+
+		.bookstack-icon {
+			background: linear-gradient(135deg, #3b82f6, #60a5fa);
+		}
+
+		.penpot-icon {
+			background: linear-gradient(135deg, #3b82f6, #60a5fa);
+		}
+
+		.wekan-icon {
+			background: linear-gradient(135deg, #3b82f6, #60a5fa);
+		}
+
+		h2 {
+			font-size: 1.8rem;
+			font-weight: 700;
+			margin-bottom: 1rem;
+			color: white;
+			transition: color 0.3s ease;
+		}
+
+		.service-card:hover h2 {
+			color: #10b981;
+		}
+
+		p {
+			color: #9ca3af;
+			line-height: 1.6;
+			margin-bottom: 2rem;
+			min-height: 3rem;
+		}
+
+		.btn {
+			display: inline-block;
+			background: linear-gradient(135deg, #10b981, #059669);
+			color: white;
+			text-decoration: none;
+			padding: 0.8rem 2rem;
+			border-radius: 12px;
+			font-weight: 600;
+			transition: all 0.3s ease;
+			border: none;
+			cursor: pointer;
+			width: 100%;
+			text-align: center;
+			font-size: 1rem;
+			letter-spacing: 0.5px;
+		}
+
+		.btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+			background: linear-gradient(135deg, #059669, #10b981);
+		}
+
+		footer {
+			text-align: center;
+			padding-top: 2rem;
+			border-top: 1px solid rgba(56, 139, 115, 0.3);
+			color: #9ca3af;
+			font-size: 0.9rem;
+			margin-top: 2rem;
+		}
+
+		@keyframes fadeInDown {
+			from {
+				opacity: 0;
+				transform: translateY(-30px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@keyframes fadeInUp {
+			from {
+				opacity: 0;
+				transform: translateY(30px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@keyframes pulse {
+			0% {
+				opacity: 1;
+			}
+			50% {
+				opacity: 0.5;
+			}
+			100% {
+				opacity: 1;
+			}
+		}
+
+		.stat-card:nth-child(1) {
+			animation-delay: 0.1s;
+		}
+
+		.stat-card:nth-child(2) {
+			animation-delay: 0.2s;
+		}
+
+		.service-card:nth-child(1) {
+			animation-delay: 0.4s;
+		}
+
+		.service-card:nth-child(2) {
+			animation-delay: 0.5s;
+		}
+		/* CPU Card extended styles */
+
+		.cpu-card {
+			grid-column: span 2;
+		}
+
+		.cpu-stats {
+			display: flex;
+			justify-content: space-around;
+			margin: 1.5rem 0;
+			text-align: center;
+		}
+
+		.cpu-stat-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.cpu-stat-value {
+			font-size: 1.8rem;
+			font-weight: 700;
+			color: #10b981;
+			margin-bottom: 0.2rem;
+		}
+
+		.cpu-stat-label {
+			font-size: 0.9rem;
+			color: #9ca3af;
+		}
+		/* Chart styles */
+
+		.chart-container {
+			background: rgba(15, 23, 42, 0.5);
+			border: 1px solid rgba(56, 139, 115, 0.2);
+			border-radius: 12px;
+			padding: 1rem;
+			margin-top: 1rem;
+		}
+
+		.chart-title {
+			font-size: 1rem;
+			font-weight: 600;
+			color: #06b6d4;
+			margin-bottom: 0.8rem;
+			text-align: center;
+		}
+
+		.chart {
+			height: 120px;
+			position: relative;
+			display: flex;
+			align-items: flex-end;
+			justify-content: space-between;
+			gap: 3px;
+		}
+
+		.chart-bar {
+			flex: 1;
+			background: linear-gradient(to top, #06b6d4, #0891b2);
+			border-radius: 2px 2px 0 0;
+			min-width: 6px;
+			position: relative;
+			transition: height 0.3s ease;
+		}
+
+		.chart-bar:hover {
+			background: linear-gradient(to top, #0891b2, #06b6d4);
+			opacity: 0.8;
+		}
+
+		.chart-labels {
+			display: flex;
+			justify-content: space-between;
+			margin-top: 0.5rem;
+			font-size: 0.7rem;
+			color: #9ca3af;
+		}
+
+		@media (max-width: 768px) {
+			body {
+				padding: 1rem;
+			}
+			h1 {
+				font-size: 2rem;
+			}
+			.services-grid {
+				grid-template-columns: 1fr;
+			}
+			.stats-grid {
+				grid-template-columns: 1fr;
+			}
+			.cpu-card {
+				grid-column: span 1;
+			}
+			.cpu-stats {
+				flex-direction: column;
+				gap: 1rem;
+			}
+		}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<header>
+				<div class="header-content">
+					<h1>Ktulhu</h1> </div>
+			</header>
+			<!-- Services Section -->
+			<div class="section">
+				<h2 class="section-title">🚀 Сервисы</h2>
+				<div class="services-grid">
+					<div class="stat-card">
+						<div class="service-icon gitlab-icon">🧬</div>
+						<h2>GitLab</h2>
+						<p>Система контроля версий</p> <a href="http://yourserver:5001" class="btn">Открыть GitLab</a> </div>
+					<div class="stat-card">
+						<div class="service-icon bookstack-icon">📚</div>
+						<h2>BookStack</h2>
+						<p>База знаний для хранения документации</p> <a href="http://yourserver:5004" class="btn">Открыть BookStack</a> </div>
+					<div class="stat-card">
+						<div class="service-icon penpot-icon">🎨</div>
+						<h2>Penpot</h2>
+						<p>Инструмент для создания макетов и дизайна</p> <a href="http://yourserver:5005" class="btn">Открыть Penpot</a> </div>
+					<div class="stat-card">
+						<div class="service-icon wekan-icon">📝</div>
+						<h2>Wekan</h2>
+						<p>Система отслеживания рабочего процесса и задач</p> <a href="http://yourserver:5006" class="btn">Открыть Wekan</a> </div>
+				</div>
+			</div>
+			<div class="section-divider"></div>
+			<!-- System Metrics Section -->
+			<div class="section">
+				<h2 class="section-title">📊 Системные показатели</h2>
+				<div class="stats-grid">
+					<div class="stat-card cpu-card">
+						<div class="stat-header">
+							<div class="card-title">Процессор</div>
+							<div class="stat-icon cpu-icon">🧠</div>
+						</div>
+						<!-- CPU Stats -->
+						<div class="cpu-stats">
+							<div class="cpu-stat-item">
+								<div class="cpu-stat-value">24%</div>
+								<div class="cpu-stat-label">Нагрузка</div>
+							</div>
+							<div class="cpu-stat-item">
+								<div class="cpu-stat-value">42°C</div>
+								<div class="cpu-stat-label">Температура</div>
+							</div>
+						</div>
+						<!-- Chart Section -->
+						<div class="chart-container">
+							<div class="chart-title">Нагрузка CPU за последние 5 минут</div>
+							<div class="chart" id="cpuChart">
+								<!-- Chart bars will be generated by JavaScript -->
+							</div>
+							<div class="chart-labels"> <span>5 мин</span> <span>4 мин</span> <span>3 мин</span> <span>2 мин</span> <span>1 мин</span> <span>Сейчас</span> </div>
+						</div>
+					</div>
+					<div class="stat-card">
+						<div class="stat-header">
+							<div class="card-title">Память</div>
+							<div class="memory-icon">💾</div>
+						</div>
+						<div class="memory-item">
+							<div class="memory-label"> <span>Оперативная память</span> <span class="memory-value">3.2/8 ГБ</span> </div>
+							<div class="progress-bar">
+								<div class="progress-fill ram-fill"></div>
+							</div>
+							<div class="progress-text">40%</div>
+						</div>
+						<div class="memory-item">
+							<div class="memory-label"> <span>Дисковое пространство</span> <span class="memory-value">325/500 ГБ</span> </div>
+							<div class="progress-bar">
+								<div class="progress-fill storage-fill"></div>
+							</div>
+							<div class="progress-text">65%</div>
+						</div>
+					</div>
+					<div class="stat-card">
+						<div class="stat-header">
+							<div class="card-title">Сеть</div>
+							<div class="stat-icon network-icon">🌐</div>
+						</div>
+						<div class="status-indicator">
+							<div class="status-dot online"></div>
+							<div class="status-text">Интернет доступен</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer>Designed by Qwen Coder AI Model</footer>
+		</div>
+		<script>
+		// Generate chart data
+		function generateChart() {
+			const chart = document.getElementById('cpuChart');
+			const data = [15, 22, 18, 24, 19, 21]; // Sample data for last 5 minutes
+			// Clear existing bars
+			chart.innerHTML = '';
+			// Create bars
+			data.forEach(value => {
+				const bar = document.createElement('div');
+				bar.className = 'chart-bar';
+				bar.style.height = `${value * 4}px`; // Scale for visualization
+				bar.title = `${value}%`;
+				chart.appendChild(bar);
+			});
+		}
+		// Update current time
+		function updateTime() {
+			const now = new Date();
+			const options = {
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				second: '2-digit'
+			};
+		}
+		// Simulate network status check
+		function checkNetworkStatus() {
+			// In a real implementation, this would check actual network status
+			// For demo purposes, we'll keep it as online
+			const statusDot = document.querySelector('.status-dot');
+			const statusText = document.querySelector('.status-text');
+			// Simulate occasional network check
+			if(Math.random() > 0.95) {
+				// Simulate brief network issue
+				statusDot.className = 'status-dot offline';
+				statusText.textContent = 'Нет подключения';
+				setTimeout(() => {
+					statusDot.className = 'status-dot online';
+					statusText.textContent = 'Интернет доступен';
+				}, 2000);
+			}
+		}
+		// Initialize
+		updateTime();
+		generateChart();
+		setInterval(updateTime, 1000);
+		setInterval(checkNetworkStatus, 5000);
+		// Add hover effects to cards
+		document.querySelectorAll('.service-card, .stat-card').forEach(card => {
+			card.addEventListener('mouseenter', function() {
+				this.style.transform = 'translateY(-5px)';
+			});
+			card.addEventListener('mouseleave', function() {
+				this.style.transform = 'translateY(0)';
+			});
 		});
-		card.addEventListener('mouseleave', function() {
-			this.style.transform = 'translateY(0)';
-		});
-	});
+		</script>
+	</body>
+
+	</html>
+	<script>
 	</script>
 </body>
 
